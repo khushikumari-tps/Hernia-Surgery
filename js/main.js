@@ -16,6 +16,71 @@
     syncBrand();
   }
 
+  /* ---------- mobile / tablet navigation ---------- */
+  var navToggle = $('#navtoggle');
+  var siteNav   = $('#sitenav');
+  var navScrim  = $('#navscrim');
+  var navClose  = $('#navclose');
+
+  if (navToggle && siteNav && navScrim) {
+    var navOpen = false;
+
+    var setNavOpen = function (open) {
+      if (open === navOpen) return;
+      navOpen = open;
+
+      if (open) {
+        siteNav.hidden = false;
+        navScrim.hidden = false;
+        // force a reflow so the transform/opacity transition actually runs
+        void siteNav.offsetWidth;
+        siteNav.classList.add('is-open');
+        navScrim.classList.add('is-open');
+        document.body.classList.add('nav-open');
+        document.documentElement.classList.add('nav-open');
+        navToggle.setAttribute('aria-expanded', 'true');
+        navToggle.setAttribute('aria-label', 'Close menu');
+        if (navClose) navClose.focus();
+      } else {
+        siteNav.classList.remove('is-open');
+        navScrim.classList.remove('is-open');
+        document.body.classList.remove('nav-open');
+        document.documentElement.classList.remove('nav-open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Open menu');
+        window.setTimeout(function () {
+          if (!navOpen) { siteNav.hidden = true; navScrim.hidden = true; }
+        }, 320);
+        if (!document.body.classList.contains('modal-open')) navToggle.focus();
+      }
+    };
+
+    navToggle.addEventListener('click', function () { setNavOpen(!navOpen); });
+    navScrim.addEventListener('click', function () { setNavOpen(false); });
+    if (navClose) navClose.addEventListener('click', function () { setNavOpen(false); });
+
+    // any link inside the panel closes it, so the target section is visible
+    siteNav.addEventListener('click', function (e) {
+      if (e.target.closest('a')) setNavOpen(false);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (!navOpen) return;
+      if (e.key === 'Escape') { setNavOpen(false); return; }
+      if (e.key !== 'Tab') return;
+      var focusable = $$('a[href], button', siteNav).filter(function (n) { return !n.disabled; });
+      if (!focusable.length) return;
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+
+    // returning to the desktop layout must never leave the panel stuck open
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 900) setNavOpen(false);
+    });
+  }
+
   /* ---------- scroll reveal ---------- */
   var revealables = $$('.reveal');
   if ('IntersectionObserver' in window) {
@@ -261,6 +326,7 @@
     modal.hidden = false;
     modal.classList.add('is-open');
     document.body.classList.add('modal-open');
+    document.documentElement.classList.add('modal-open');
     if (quickError) { quickError.textContent = ''; quickError.classList.remove('is-visible'); }
     setTimeout(function () { if (quickPhone) quickPhone.focus(); }, 60);
   }
@@ -270,6 +336,7 @@
     modal.classList.remove('is-open');
     modal.hidden = true;
     document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 

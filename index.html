@@ -137,6 +137,39 @@
   <span class="brandmark__text"><b>Advitya Healthcares</b><small>Science for Humanity</small></span>
 </a>
 
+<!-- ============ MOBILE / TABLET NAVIGATION ============ -->
+<button class="navtoggle" id="navtoggle" type="button"
+        aria-label="Open menu" aria-expanded="false" aria-controls="sitenav">
+  <span class="navtoggle__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+</button>
+
+<div class="navscrim" id="navscrim" hidden></div>
+
+<nav class="sitenav" id="sitenav" aria-label="Section navigation" hidden>
+  <div class="sitenav__head">
+    <span class="sitenav__title">Menu</span>
+    <button class="sitenav__close" type="button" id="navclose" aria-label="Close menu"><svg><use href="#i-close"/></svg></button>
+  </div>
+
+  <ul class="sitenav__list">
+    <li><a href="#top">Hernia Surgery</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#symptoms">First Symptoms</a></li>
+    <li><a href="#types">Types of Hernia</a></li>
+    <li><a href="#what-is-hernia">What Is a Hernia?</a></li>
+    <li><a href="#why">Why Advitya</a></li>
+    <li><a href="#options">Surgery Options</a></li>
+    <li><a href="#journey">Care Journey</a></li>
+    <li><a href="#locations">Locations</a></li>
+    <li><a href="#faqs">FAQs</a></li>
+  </ul>
+
+  <div class="sitenav__cta">
+    <a class="sitenav__book" href="#book" data-book><svg><use href="#i-calendar"/></svg>Book Appointment</a>
+    <a class="sitenav__call" href="tel:+919211221551"><svg><use href="#i-phone"/></svg>+91 92112 21551</a>
+  </div>
+</nav>
+
 <main id="main">
 
 <!-- ============ 1. SPECIALIST PROFILE BAND ============ -->
@@ -807,6 +840,12 @@
   <a class="is-wa" href="https://wa.me/919211221551?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20hernia%20surgery." target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg>WhatsApp</a>
   <a class="is-book" href="#book" data-book><svg><use href="#i-calendar"/></svg>Book Appointment</a>
 </nav>
+
+<!-- ============ FLOATING WHATSAPP BUTTON ============ -->
+<a class="wafloat" href="https://wa.me/919211221551?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20hernia%20surgery."
+   target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+  <svg aria-hidden="true"><use href="#i-wa"/></svg>
+</a>
 
 <!-- ============ QUICK-START MODAL ============ -->
 <div class="modal" id="quick-modal" role="dialog" aria-modal="true" aria-labelledby="quick-title" hidden>

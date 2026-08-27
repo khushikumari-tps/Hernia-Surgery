@@ -50,9 +50,14 @@
 
 /* ---------- 2. Reset / base ---------- */
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 14px)}
+html{
+  -webkit-text-size-adjust:100%;scroll-behavior:smooth;
+  scroll-padding-top:calc(var(--header-h) + 14px);
+  width:100%;overflow-x:hidden;
+}
 body{
   margin:0;
+  width:100%;
   font-family:var(--font-body);
   font-size:clamp(1rem,1.05vw,1.0625rem);
   line-height:1.68;
@@ -63,6 +68,10 @@ body{
 }
 img,svg{max-width:100%;display:block}
 img{height:auto}
+iframe,video,embed,object{max-width:100%}
+/* grid/flex children must be allowed to shrink below their content width */
+.wrap > *,.phero__grid > *,.about-band__grid > *,.grid-2 > *,.grid-3 > *,
+.tstrip > *,.split > *,.loc-layout > *,.footer__grid > *{min-width:0}
 a{color:inherit;text-decoration:none}
 button,input,select,textarea{font:inherit;color:inherit}
 h1,h2,h3,h4{font-family:var(--font-head);color:var(--ink);margin:0 0 .5em;line-height:1.16;letter-spacing:-.02em;font-weight:700}
@@ -992,4 +1001,249 @@ body.modal-open{overflow:hidden}
   .brandmark{padding:8px 12px;border-radius:12px}
   .brandmark img{height:36px}
   .brandmark__text{display:none}
+}
+
+
+/* ==========================================================================
+   31. Mobile / tablet navigation (hamburger)
+   Desktop (>900px) is unaffected: the toggle and panel are display:none there.
+   ========================================================================== */
+.navtoggle{
+  display:none;
+  position:fixed;top:clamp(12px,1.6vw,18px);right:clamp(12px,2.4vw,20px);z-index:970;
+  width:48px;height:48px;padding:0;border:1px solid rgba(158,36,48,.12);
+  background:rgba(255,255,255,.95);border-radius:14px;cursor:pointer;
+  box-shadow:0 10px 26px rgba(58,10,12,.18);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
+  place-items:center;
+}
+.navtoggle__bars{display:grid;gap:5px;width:20px}
+.navtoggle__bars i{
+  display:block;height:2px;width:100%;border-radius:2px;background:var(--navy-800);
+  transition:transform .28s cubic-bezier(.2,.7,.3,1),opacity .2s;
+}
+.navtoggle[aria-expanded="true"] .navtoggle__bars i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.navtoggle[aria-expanded="true"] .navtoggle__bars i:nth-child(2){opacity:0}
+.navtoggle[aria-expanded="true"] .navtoggle__bars i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+.navscrim{
+  position:fixed;inset:0;z-index:975;background:rgba(30,6,8,.5);
+  opacity:0;transition:opacity .26s ease;
+}
+.navscrim.is-open{opacity:1}
+
+.sitenav{
+  position:fixed;top:0;right:0;bottom:0;z-index:980;
+  width:min(330px,86vw);max-width:100%;
+  display:flex;flex-direction:column;
+  background:#fff;box-shadow:-18px 0 44px rgba(30,6,8,.24);
+  transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.7,.3,1);
+  overflow-y:auto;overscroll-behavior:contain;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.sitenav.is-open{transform:none}
+/* display:flex above would otherwise beat the UA rule for [hidden] */
+.sitenav[hidden],.navscrim[hidden]{display:none}
+.sitenav__head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:18px 18px 14px;border-bottom:1px solid var(--line);
+}
+.sitenav__title{
+  font-family:var(--font-head);font-weight:800;font-size:.72rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--teal-600);
+}
+.sitenav__close{
+  width:40px;height:40px;flex:none;border:1px solid var(--line);background:#fff;border-radius:50%;
+  cursor:pointer;display:grid;place-items:center;color:var(--navy-800);transition:background .2s,border-color .2s;
+}
+.sitenav__close:hover{background:var(--surface-2);border-color:var(--blue-500)}
+.sitenav__close svg{width:18px;height:18px}
+
+.sitenav__list{display:block;padding:6px 0;margin:0;flex:1 1 auto;min-height:0}
+.sitenav__list li{border-bottom:1px solid var(--line-soft)}
+.sitenav__list li:last-child{border-bottom:0}
+.sitenav__list a{
+  display:block;padding:14px 18px;min-height:48px;
+  font-family:var(--font-head);font-weight:700;font-size:1rem;line-height:1.4;
+  color:var(--navy-800);transition:background .2s,color .2s,padding-left .2s;
+  overflow-wrap:anywhere;
+}
+.sitenav__list a:hover,.sitenav__list a:focus-visible{background:var(--blue-050);color:var(--blue-600);padding-left:22px}
+
+.sitenav__cta{display:grid;gap:10px;padding:16px 18px 22px;border-top:1px solid var(--line);background:var(--surface-2)}
+.sitenav__book,.sitenav__call{
+  display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:50px;
+  border-radius:999px;padding:13px 18px;
+  font-family:var(--font-head);font-weight:700;font-size:.98rem;text-align:center;
+}
+.sitenav__book{background:linear-gradient(135deg,var(--blue-600),var(--navy-700));color:#fff;box-shadow:var(--shadow-blue)}
+.sitenav__call{background:#fff;color:var(--navy-800);border:1.5px solid var(--line)}
+.sitenav__book svg,.sitenav__call svg{width:17px;height:17px;flex:none}
+
+/* html is the scrolling element now that it carries overflow-x, so the lock
+   has to be applied there as well - body-only would no longer hold. */
+body.nav-open{overflow:hidden}
+html.nav-open,html.modal-open{overflow:hidden}
+
+@media (max-width:900px){
+  .navtoggle{display:grid}
+}
+@media (prefers-reduced-motion:reduce){
+  .sitenav{transition:none}
+}
+
+/* ==========================================================================
+   32. Floating WhatsApp button
+   Mobile / tablet only, so the desktop layout is unchanged. It is lifted
+   clear of the sticky mobile CTA bar wherever that bar is on screen.
+   ========================================================================== */
+:root{--cta-h:64px}
+
+.wafloat{
+  display:none;
+  position:fixed;right:16px;bottom:16px;z-index:860;
+  width:52px;height:52px;border-radius:50%;
+  background:#1FA855;color:#fff;
+  place-items:center;box-shadow:0 10px 26px rgba(31,168,85,.38);
+  transition:transform .24s cubic-bezier(.2,.7,.3,1),box-shadow .24s;
+}
+.wafloat svg{width:27px;height:27px}
+.wafloat:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(31,168,85,.46)}
+
+@media (max-width:900px){
+  .wafloat{display:grid}
+}
+/* clear the sticky Call / WhatsApp / Book bar */
+@media (max-width:760px){
+  .wafloat{bottom:calc(var(--cta-h) + env(safe-area-inset-bottom) + 14px)}
+}
+/* hidden while the slide-in menu or the booking modal is open */
+body.nav-open .wafloat,body.modal-open .wafloat{display:none}
+
+
+/* ==========================================================================
+   33. Responsive refinements (mobile + tablet)
+   Layout only - no transform:scale, no zoom, no desktop restyling.
+   ========================================================================== */
+
+/* ---- tablet: up to 900px ---- */
+@media (max-width:900px){
+  :root{--header-h:64px}
+  .widget{max-width:none}                 /* booking card fills the column */
+  .grid-2{grid-template-columns:1fr}      /* Open / Laparoscopic repair stack */
+  .split{grid-template-columns:1fr}
+  .phero h1{font-size:clamp(2rem,8vw,2.2rem);line-height:1.14}   /* 32px - 35px */
+
+  /* secondary labels lifted out of the sub-14px range */
+  .phero__reg{font-size:.9rem}
+  .radio span small{font-size:.86rem}
+  .loc-card__text span{font-size:.84rem}
+
+  /* touch targets */
+  .picker__btn{width:34px;height:44px}
+  .about__toggle{min-height:44px}
+  .type-card__link{min-height:44px;align-items:center}
+  .venue__links a{min-height:44px}
+  .footer__links a{display:inline-block;padding-block:6px}
+  .footer__contact li{align-items:center}
+  .footer__contact a{display:inline-block;padding-block:8px}
+  .footer__legal a{display:inline-block;padding-block:6px}
+  .anatomy{max-width:640px;margin-inline:auto}
+  .brandmark{max-width:calc(100% - 84px)} /* never runs under the hamburger */
+  .brandmark__text{min-width:0}
+  .brandmark__text b,.brandmark__text small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+
+/* ---- phones and small tablets: up to 760px ---- */
+@media (max-width:760px){
+  body{padding-bottom:calc(var(--cta-h) + env(safe-area-inset-bottom))}
+
+  /* typography */
+  .about h2,.tl-head h2{font-size:clamp(1.65rem,6.4vw,2rem)}
+  .sec-sub,.lead{font-size:1rem}
+
+  /* body copy stays in the 15-17px readable band */
+  .scard p,.wcard p,.type-card p,.tstrip__item p,.tcard p,
+  .ocard li,.ocard p,.venue__addr,.alert p,.note p,.type-note,
+  .footer,.footer__links a,.footer__contact a{font-size:.95rem}
+  .tstep p{font-size:.94rem}
+  .about p{font-size:1rem}
+
+  /* spacing */
+  :root{--gutter:20px}
+  .section{padding-block:clamp(38px,9vw,54px)}
+  .sec-head{margin-bottom:26px}
+
+  /* hero */
+  .phero{padding-top:84px}
+  .phero__photo{width:min(262px,72vw);height:auto;aspect-ratio:262/370}
+  .phero__nameline{gap:10px}
+  .facts li{font-size:.95rem}
+  .phero__line{align-items:flex-start}
+  .phero__line > svg{margin-top:4px}
+  .phero__pill{min-height:44px}
+
+  /* long strings wrap instead of pushing the page wide */
+  .facts li,.phero__line span,.venue__addr,.loc-card__text span,
+  .footer__contact a,.faq__q,.modal__card{overflow-wrap:anywhere}
+
+  /* buttons: comfortable touch targets, text allowed to wrap */
+  .btn{white-space:normal;min-height:48px;padding:13px 22px}
+  .btn--lg{min-height:52px}
+  .btn-row{gap:14px}
+  .about__ask{min-height:48px}
+
+  /* booking widget */
+  .widget__label{font-size:.98rem}
+  .radio{min-height:44px;padding-block:3px}   /* keeps the dot aligned to the title */
+  .slot{min-height:52px}
+
+  /* cards / lists */
+  .venue__links{gap:4px 20px}
+
+  /* locations */
+  .loc-panel{padding:26px 20px}
+  .loc-card{padding:12px 14px}
+
+  /* final CTA */
+  .final .btn-row{gap:14px}
+}
+
+/* ---- small phones: up to 480px ---- */
+@media (max-width:480px){
+  :root{--gutter:18px}
+  .grid-3,.grid-2,.tstrip,.trustbar__grid{grid-template-columns:1fr}
+
+  /* appointment actions become full-width, one per row */
+  .widget__actions{grid-template-columns:1fr}
+  .widget__actions .widget__call{border-left:0;border-top:1px solid #EFE1DF}
+  .widget__actions a,.widget__actions button{min-height:54px;padding:15px 14px}
+
+  .scard__no{font-size:1.4rem;top:18px;right:18px}
+  .scard h3,.type-card h3,.wcard h3{padding-right:38px}
+  .alert{gap:14px}
+  .alert .btn{width:100%}
+  .decide{padding:20px 18px}
+  .faq__q{gap:12px}
+  .footer__bottom{gap:10px}
+  .footer__legal{gap:6px 18px}
+}
+
+/* ---- 390px and below (375px / 360px) ---- */
+@media (max-width:390px){
+  :root{--gutter:16px}
+  .phero__photo{width:min(240px,70vw)}
+  .widget__head,.widget__body{padding-left:16px;padding-right:16px}
+  .widget__head h2{font-size:1.06rem}
+  .slot{width:62px}
+  .slot--time{width:68px}
+  .picker{gap:4px}
+  .picker__btn{width:30px}
+  .mobile-cta a{font-size:.68rem;padding:9px 4px}
+  .mobile-cta a svg{width:18px;height:18px}
+  .sitenav{width:min(300px,88vw)}
+  .wafloat{width:50px;height:50px;right:14px}
+  .modal{padding:16px}
+  .loc-card{left:10px;right:10px;top:10px}
+  .tl-head h2{font-size:1.62rem}
 }
