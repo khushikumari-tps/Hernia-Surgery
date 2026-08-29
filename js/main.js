@@ -79,55 +79,6 @@
     });
   }
 
-  /* ---------- desktop mega menu ---------- */
-  var megaWrap = $('#mega-wrap');
-  var megaTrigger = $('#mega-trigger');
-  var megaPanel = $('#mega-panel');
-
-  if (megaWrap && megaTrigger && megaPanel) {
-    var megaOpen = false;
-    var megaTimer = null;
-
-    var setMega = function (open) {
-      if (open === megaOpen) return;
-      megaOpen = open;
-      if (open) megaPanel.hidden = false;
-      megaWrap.classList.toggle('is-open', open);
-      megaTrigger.setAttribute('aria-expanded', String(open));
-      if (!open) {
-        window.setTimeout(function () { if (!megaOpen) megaPanel.hidden = true; }, 260);
-      }
-    };
-    var clearTimer = function () { if (megaTimer) { clearTimeout(megaTimer); megaTimer = null; } };
-    var closeSoon = function () { clearTimer(); megaTimer = setTimeout(function () { setMega(false); }, 160); };
-
-    megaTrigger.addEventListener('click', function () { clearTimer(); setMega(!megaOpen); });
-
-    // hover only where a pointer can actually hover
-    if (window.matchMedia('(hover:hover)').matches) {
-      megaWrap.addEventListener('mouseenter', function () { clearTimer(); setMega(true); });
-      megaWrap.addEventListener('mouseleave', closeSoon);
-    }
-
-    // keyboard: focus leaving the group closes it
-    megaWrap.addEventListener('focusin', function () { clearTimer(); });
-    megaWrap.addEventListener('focusout', function () {
-      window.setTimeout(function () {
-        if (!megaWrap.contains(document.activeElement)) setMega(false);
-      }, 0);
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && megaOpen) { setMega(false); megaTrigger.focus(); }
-    });
-    document.addEventListener('click', function (e) {
-      if (megaOpen && !megaWrap.contains(e.target)) setMega(false);
-    });
-    // choosing a destination closes the panel
-    megaPanel.addEventListener('click', function (e) {
-      if (e.target.closest('a')) setMega(false);
-    });
-  }
-
   /* ---------- mobile drawer accordion ---------- */
   $$('.acc__btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -144,7 +95,7 @@
      scroll while that transform is still applied, the section lands ~24px
      high and hides under the fixed navbar. Reveal it first, then scroll. */
   document.addEventListener('click', function (e) {
-    var a = e.target.closest('#mega-panel a[href^="#"], .acc__panel a[href^="#"], .drawer__links a[href^="#"]');
+    var a = e.target.closest('.acc__panel a[href^="#"], .drawer__links a[href^="#"]');
     if (!a) return;
     var id = a.getAttribute('href').slice(1);
     if (!id) return;
@@ -155,7 +106,7 @@
   }, true);
 
   /* ---------- highlight the section currently on screen ---------- */
-  var navLinks = $$('.mega__list a[href^="#"], .acc__panel a[href^="#"]');
+  var navLinks = $$('.acc__panel a[href^="#"], .drawer__links a[href^="#"]');
   if (navLinks.length && 'IntersectionObserver' in window) {
     var byId = {};
     navLinks.forEach(function (a) {

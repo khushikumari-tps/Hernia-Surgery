@@ -1379,142 +1379,6 @@ html.drawer-open{overflow:hidden}
 
 
 /* ==========================================================================
-   36. Desktop navbar + Hernia Surgery mega menu  (>=901px)
-   Ground is white and neutral grey; the brand crimson appears only as an
-   accent (icons, rules, active state, CTA) so the panel never reads red-heavy.
-   Below 901px the whole navbar is display:none and the drawer takes over.
-   ========================================================================== */
-.dnav{display:none}
-
-@media (min-width:901px){
-  .brandmark{display:none}          /* the logo lives in the real header now */
-
-  /* body{overflow-x:hidden} makes <body> a scroll container, which silently
-     breaks position:sticky for its children - so the header is fixed and the
-     body reserves its height instead. */
-  body{padding-top:78px}
-  .dnav{
-    display:block;position:fixed;top:0;left:0;right:0;z-index:970;
-    background:rgba(255,255,255,.94);
-    -webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px);
-    border-bottom:1px solid var(--line-soft);
-    box-shadow:0 1px 3px rgba(58,10,12,.04);
-  }
-  .dnav__inner{
-    width:100%;max-width:var(--wrap);margin-inline:auto;
-    padding-inline:var(--gutter);height:78px;
-    display:flex;align-items:center;justify-content:space-between;gap:24px;
-  }
-
-  .dnav__brand{display:inline-flex;align-items:center;gap:11px;flex:none;min-width:0}
-  .dnav__brand img{height:clamp(32px,4.4vw,44px);width:auto;object-fit:contain;display:block;flex:none}
-  .dnav__brandtext{display:flex;flex-direction:column;line-height:1.15;min-width:0}
-  .dnav__brandtext b{
-    font-family:var(--font-head);font-weight:800;font-size:1rem;
-    color:var(--navy-800);letter-spacing:-.02em;white-space:nowrap;
-  }
-  .dnav__brandtext small{
-    font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--teal-600);white-space:nowrap;
-  }
-
-  .dnav__nav{display:flex;align-items:center;gap:6px;flex:none}
-  .dnav__link{
-    display:inline-flex;align-items:center;height:42px;padding:0 14px;border-radius:10px;
-    font-family:var(--font-head);font-weight:600;font-size:.95rem;color:var(--ink);
-    transition:background .2s,color .2s;
-  }
-  .dnav__link:hover{background:var(--surface-2);color:var(--blue-600)}
-  .dnav__cta{
-    display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;margin-left:8px;
-    border-radius:999px;background:linear-gradient(135deg,var(--blue-600),var(--navy-700));color:#fff;
-    font-family:var(--font-head);font-weight:700;font-size:.92rem;
-    box-shadow:0 6px 16px rgba(158,36,48,.22);transition:transform .2s,box-shadow .2s;
-  }
-  .dnav__cta svg{width:16px;height:16px}
-  .dnav__cta:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(158,36,48,.28)}
-
-  /* ---------- trigger ---------- */
-  .mega{position:static}
-  .mega__trigger{
-    display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 14px;
-    border:0;background:none;cursor:pointer;border-radius:10px;
-    font-family:var(--font-head);font-weight:600;font-size:.95rem;color:var(--ink);
-    transition:background .2s,color .2s;
-  }
-  .mega__trigger svg{width:13px;height:13px;transition:transform .24s ease}
-  .mega__trigger:hover,.mega__trigger[aria-expanded="true"]{background:var(--surface-2);color:var(--blue-600)}
-  .mega__trigger[aria-expanded="true"] svg{transform:rotate(180deg)}
-
-  /* ---------- panel ---------- */
-  .mega__panel{
-    position:absolute;left:50%;top:calc(100% + 10px);transform:translate(-50%,-8px);
-    width:min(var(--wrap) - (2 * var(--gutter)), calc(100vw - 2 * var(--gutter)));
-    max-width:900px;
-    background:#fff;border:1px solid var(--line);border-radius:16px;
-    box-shadow:0 1px 2px rgba(58,10,12,.04),0 24px 60px rgba(58,10,12,.13);
-    padding:26px 28px 0;overflow:hidden;
-    opacity:0;visibility:hidden;pointer-events:none;
-    transition:opacity .24s ease,transform .24s cubic-bezier(.2,.7,.3,1),visibility .24s;
-  }
-  .mega__panel[hidden]{display:block}     /* [hidden] must not kill the transition */
-  .mega.is-open .mega__panel{
-    opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);
-  }
-
-  .mega__grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 36px}
-  .mega__col{min-width:0}
-  .mega__heading{
-    display:flex;align-items:center;gap:9px;margin:0 0 14px;padding-bottom:12px;
-    border-bottom:1px solid var(--line-soft);
-    font-family:var(--font-head);font-weight:800;font-size:.74rem;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--teal-600);
-  }
-  .mega__heading svg{width:17px;height:17px;flex:none;color:var(--blue-600)}
-
-  .mega__list{display:grid;gap:2px;margin:0 0 22px;padding:0;list-style:none}
-  .mega__list a{
-    display:block;padding:10px 12px;border-radius:9px;
-    font-size:.95rem;font-weight:500;color:var(--body);
-    transition:background .18s,color .18s,padding-left .18s;
-  }
-  .mega__list a:hover,.mega__list a:focus-visible{
-    background:var(--surface-2);color:var(--blue-600);padding-left:16px;
-  }
-  .mega__list a.is-current{
-    color:var(--blue-600);font-weight:700;background:var(--blue-050);
-  }
-
-  /* ---------- CTA band ---------- */
-  .mega__cta{
-    display:flex;align-items:center;justify-content:space-between;gap:22px;
-    margin:0 -28px;padding:18px 28px;
-    background:linear-gradient(120deg,var(--surface-2) 0%,#FFF7F4 100%);
-    border-top:1px solid var(--line-soft);
-  }
-  .mega__cta-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
-  .mega__cta-copy b{font-family:var(--font-head);font-size:1rem;color:var(--ink);letter-spacing:-.01em}
-  .mega__cta-copy span{font-size:.9rem;color:var(--muted)}
-  .mega__cta-btn{
-    display:inline-flex;align-items:center;gap:9px;flex:none;height:46px;padding:0 22px;
-    border-radius:999px;background:linear-gradient(135deg,var(--blue-600),var(--navy-700));color:#fff;
-    font-family:var(--font-head);font-weight:700;font-size:.95rem;
-    box-shadow:0 8px 20px rgba(158,36,48,.24);transition:transform .2s,box-shadow .2s;
-  }
-  .mega__cta-btn svg{width:16px;height:16px;transition:transform .2s}
-  .mega__cta-btn:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(158,36,48,.3)}
-  .mega__cta-btn:hover svg{transform:translateX(3px)}
-
-  /* the sticky header occupies the space the floating brand pill used to */
-  .phero{padding-top:clamp(26px,3.2vw,44px)}
-  :root{--header-h:78px}
-}
-
-@media (min-width:901px) and (prefers-reduced-motion:reduce){
-  .mega__panel{transition:none}
-}
-
-/* ==========================================================================
    37. Mobile drawer accordion (<=900px)
    ========================================================================== */
 .acc{border-bottom:1px solid var(--line-soft)}
@@ -1602,16 +1466,17 @@ html.drawer-open{overflow:hidden}
 .lang__opt.is-active .lang__tick{opacity:1}
 
 /* ---------- header cluster: language pill + hamburger ---------- */
-.mtools{display:none}
 .lang__short{display:none}
 
+/* the cluster is fixed at every width; only the burger is mobile-only */
+.mtools{
+  display:flex;align-items:center;gap:8px;
+  position:fixed;top:clamp(12px,1.6vw,18px);right:clamp(12px,2.4vw,30px);z-index:965;
+}
+.burger{position:static;top:auto;right:auto}
+
 @media (max-width:900px){
-  .mtools{
-    display:flex;align-items:center;gap:8px;
-    position:fixed;top:clamp(12px,1.6vw,18px);right:clamp(12px,2.4vw,20px);z-index:965;
-  }
-  /* the burger is now laid out by the cluster, not pinned itself */
-  .burger{position:static;top:auto;right:auto}
+  .mtools{right:clamp(12px,2.4vw,20px)}
 
   /* compact pill: globe + language code, matched to the burger's height */
   .mtools .lang__trigger{
@@ -1621,7 +1486,7 @@ html.drawer-open{overflow:hidden}
     box-shadow:0 10px 26px rgba(58,10,12,.18);
     -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
   }
-  .mtools .lang__current{display:none}
+  .mtools .lang__current{display:none}   /* compact to the code on mobile */
   .mtools .lang__short{
     display:inline;font-family:var(--font-head);font-weight:700;
     font-size:.86rem;letter-spacing:.02em;
