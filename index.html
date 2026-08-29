@@ -121,6 +121,10 @@
     <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M2.9 12h18.2M12 2.8c2.4 2.6 3.7 5.8 3.7 9.2S14.4 18.6 12 21.2c-2.4-2.6-3.7-5.8-3.7-9.2S9.6 5.4 12 2.8Z"/></symbol>
     <symbol id="i-chevron-r" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5.5 6.5 6.5L9 18.5"/></symbol>
     <symbol id="i-arrow-ne" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8.4 7H17v8.6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-torso-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l-.5 6.2 1 3.4-2.6 4.1V21h-2.4v-3.6h-1V21H8.1v-4.3L5.5 12.6l1-3.4Z"/></symbol>
+    <symbol id="i-scalpel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.2 21 9.7l-8.4 2 2-8.5ZM12.6 11.7 3.4 20.9"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-8 5.6-13.4 16-14-.6 10.4-6 16-14 16Z"/><path d="M4.5 19.5 12 12"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"/></symbol>
     <symbol id="i-directions" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.5 9.5 9.5L12 21.5 2.5 12Z"/><path d="M9.6 13.6v-2.2a1.8 1.8 0 0 1 1.8-1.8h3.4"/><path d="m13.2 8 1.8 1.6-1.8 1.7"/></symbol>
     <!-- simplified abdominal silhouette used by the hernia type cards -->
@@ -133,42 +137,213 @@
 <a class="sr-only" href="#main">Skip to main content</a>
 
 <a class="brandmark" id="brandmark" href="#top" aria-label="Advitya Healthcares - Hernia Surgery">
-  <img src="images/advitya_logo_nav.png" alt="Advitya Healthcares logo" width="234" height="200">
+  <img src="images/advitya_logo_mark.png" alt="Advitya Healthcares logo" width="147" height="126">
   <span class="brandmark__text"><b>Advitya Healthcares</b><small>Science for Humanity</small></span>
 </a>
 
-<!-- ============ MOBILE / TABLET NAVIGATION ============ -->
-<button class="navtoggle" id="navtoggle" type="button"
-        aria-label="Open menu" aria-expanded="false" aria-controls="sitenav">
-  <span class="navtoggle__bars" aria-hidden="true"><i></i><i></i><i></i></span>
-</button>
+<!-- ============ DESKTOP NAVBAR + MEGA MENU (>=901px) ============ -->
+<header class="dnav" id="dnav">
+  <div class="dnav__inner">
+    <a class="dnav__brand" href="#top" aria-label="Advitya Healthcares - Hernia Surgery">
+      <img src="images/advitya_logo_mark.png" alt="Advitya Healthcares logo" width="147" height="126">
+      <span class="dnav__brandtext"><b>Advitya Healthcares</b><small>Science for Humanity</small></span>
+    </a>
 
-<div class="navscrim" id="navscrim" hidden></div>
+    <nav class="dnav__nav" aria-label="Primary">
+      <div class="mega" id="mega-wrap">
+        <button class="mega__trigger" type="button" id="mega-trigger"
+                aria-expanded="false" aria-controls="mega-panel" aria-haspopup="true">
+          Hernia Surgery <svg aria-hidden="true"><use href="#i-chevron"/></svg>
+        </button>
 
-<nav class="sitenav" id="sitenav" aria-label="Section navigation" hidden>
-  <div class="sitenav__head">
-    <span class="sitenav__title">Menu</span>
-    <button class="sitenav__close" type="button" id="navclose" aria-label="Close menu"><svg><use href="#i-close"/></svg></button>
+        <div class="mega__panel" id="mega-panel" role="group" aria-labelledby="mega-trigger" hidden>
+          <div class="mega__grid">
+            <section class="mega__col">
+              <h3 class="mega__heading"><svg aria-hidden="true"><use href="#i-torso-sm"/></svg>Hernia Conditions</h3>
+              <ul class="mega__list">
+                <li><a href="#top">Hernia Overview</a></li>
+                <li><a href="#type-inguinal">Inguinal Hernia</a></li>
+                <li><a href="#type-umbilical">Umbilical Hernia</a></li>
+                <li><a href="#type-incisional">Incisional Hernia</a></li>
+                <li><a href="#type-femoral">Femoral Hernia</a></li>
+                <li><a href="#types">Hiatal Hernia</a></li>
+              </ul>
+            </section>
+
+            <section class="mega__col">
+              <h3 class="mega__heading"><svg aria-hidden="true"><use href="#i-scalpel"/></svg>Treatments &amp; Patient Care</h3>
+              <ul class="mega__list">
+                <li><a href="#repair-laparoscopic">Laparoscopic Hernia Surgery</a></li>
+                <li><a href="#repair-open">Open Hernia Surgery</a></li>
+                <li><a href="#options">Robotic Hernia Surgery</a></li>
+                <li><a href="#options">Complex Hernia Repair</a></li>
+                <li><a href="#journey">Recovery &amp; Aftercare</a></li>
+                <li><a href="#faqs">Frequently Asked Questions</a></li>
+              </ul>
+            </section>
+          </div>
+
+          <div class="mega__cta">
+            <div class="mega__cta-copy">
+              <b>Need Expert Hernia Care?</b>
+              <span>Consult our experienced surgical team for personalized treatment.</span>
+            </div>
+            <a class="mega__cta-btn" href="#book" data-book>
+              Book an Appointment <svg aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <a class="dnav__link" href="#locations">Locations</a>
+      <a class="dnav__cta" href="#book" data-book><svg aria-hidden="true"><use href="#i-calendar"/></svg>Book Appointment</a>
+    </nav>
+  </div>
+</header>
+
+<div class="mtools" id="mtools">
+  <div class="lang notranslate" translate="no" data-lang-root>
+        <button class="lang__trigger" type="button" id="lang-trigger-m"
+                aria-expanded="false" aria-haspopup="listbox" aria-controls="lang-menu-m">
+          <svg class="lang__globe" aria-hidden="true"><use href="#i-globe"/></svg>
+          <span class="lang__current" data-lang-label>English</span>
+          <span class="lang__short" data-lang-short>EN</span>
+          <svg class="lang__chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+        </button>
+        <ul class="lang__menu" id="lang-menu-m" role="listbox"
+            aria-labelledby="lang-trigger-m" tabindex="-1" hidden>
+          <li role="option" aria-selected="true">
+            <button class="lang__opt is-active" type="button" data-lang="en" lang="en">
+              <span class="lang__code">EN</span>
+              <span class="lang__name">English</span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+          <li role="option" aria-selected="false">
+            <button class="lang__opt" type="button" data-lang="bn" lang="bn">
+              <span class="lang__code">BN</span>
+              <span class="lang__name">Bengali <i>বাংলা</i></span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+          <li role="option" aria-selected="false">
+            <button class="lang__opt" type="button" data-lang="gu" lang="gu">
+              <span class="lang__code">GU</span>
+              <span class="lang__name">Gujarati <i>ગુજરાતી</i></span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+          <li role="option" aria-selected="false">
+            <button class="lang__opt" type="button" data-lang="hi" lang="hi">
+              <span class="lang__code">HI</span>
+              <span class="lang__name">Hindi <i>हिन्दी</i></span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+          <li role="option" aria-selected="false">
+            <button class="lang__opt" type="button" data-lang="kn" lang="kn">
+              <span class="lang__code">KN</span>
+              <span class="lang__name">Kannada <i>ಕನ್ನಡ</i></span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+          <li role="option" aria-selected="false">
+            <button class="lang__opt" type="button" data-lang="ml" lang="ml">
+              <span class="lang__code">ML</span>
+              <span class="lang__name">Malayalam <i>മലയാളം</i></span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+          <li role="option" aria-selected="false">
+            <button class="lang__opt" type="button" data-lang="mr" lang="mr">
+              <span class="lang__code">MR</span>
+              <span class="lang__name">Marathi <i>मराठी</i></span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+          <li role="option" aria-selected="false">
+            <button class="lang__opt" type="button" data-lang="or" lang="or">
+              <span class="lang__code">OR</span>
+              <span class="lang__name">Odia <i>ଓଡ଼ିଆ</i></span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+          <li role="option" aria-selected="false">
+            <button class="lang__opt" type="button" data-lang="ta" lang="ta">
+              <span class="lang__code">TA</span>
+              <span class="lang__name">Tamil <i>தமிழ்</i></span>
+              <svg class="lang__tick" aria-hidden="true"><use href="#i-check"/></svg>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+  <button class="burger" type="button" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+    <svg><use href="#i-menu"/></svg>
+  </button>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<aside class="drawer" id="drawer" aria-label="Menu" aria-hidden="true">
+  <div class="drawer__head">
+    <b>Hernia Surgery</b>
+    <button class="drawer__close" type="button" id="drawer-close" aria-label="Close menu"><svg><use href="#i-close"/></svg></button>
   </div>
 
-  <ul class="sitenav__list">
-    <li><a href="#top">Hernia Surgery</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#symptoms">First Symptoms</a></li>
-    <li><a href="#types">Types of Hernia</a></li>
-    <li><a href="#what-is-hernia">What Is a Hernia?</a></li>
-    <li><a href="#why">Why Advitya</a></li>
-    <li><a href="#options">Surgery Options</a></li>
-    <li><a href="#journey">Care Journey</a></li>
-    <li><a href="#locations">Locations</a></li>
-    <li><a href="#faqs">FAQs</a></li>
-  </ul>
+  <nav class="drawer__links" aria-label="Mobile">
+    <a class="is-current" href="#top" aria-current="page">Overview</a>
+    <a href="#about">About Hernia Surgery</a>
+    <a href="#what-is-hernia">What Is a Hernia?</a>
+    <a href="#symptoms">First Symptoms</a>
 
-  <div class="sitenav__cta">
-    <a class="sitenav__book" href="#book" data-book><svg><use href="#i-calendar"/></svg>Book Appointment</a>
-    <a class="sitenav__call" href="tel:+919211221551"><svg><use href="#i-phone"/></svg>+91 92112 21551</a>
-  </div>
-</nav>
+    <div class="acc">
+      <button class="acc__btn" type="button" aria-expanded="false" aria-controls="acc-conditions">
+        <span><svg aria-hidden="true"><use href="#i-torso-sm"/></svg>Hernia Conditions</span>
+        <svg class="acc__chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+      </button>
+      <div class="acc__panel" id="acc-conditions" hidden>
+        <a href="#types">Types of Hernia</a>
+        <a href="#type-inguinal">Inguinal Hernia</a>
+        <a href="#type-umbilical">Umbilical Hernia</a>
+        <a href="#type-incisional">Incisional Hernia</a>
+        <a href="#type-femoral">Femoral Hernia</a>
+        <a href="#types">Hiatal Hernia</a>
+        <a href="#what-is-hernia">What Is a Hernia?</a>
+      </div>
+    </div>
+
+    <div class="acc">
+      <button class="acc__btn" type="button" aria-expanded="false" aria-controls="acc-treatments">
+        <span><svg aria-hidden="true"><use href="#i-scalpel"/></svg>Treatments</span>
+        <svg class="acc__chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+      </button>
+      <div class="acc__panel" id="acc-treatments" hidden>
+        <a href="#options">Surgery Options</a>
+        <a href="#repair-laparoscopic">Laparoscopic Hernia Surgery</a>
+        <a href="#repair-open">Open Hernia Surgery</a>
+        <a href="#options">Robotic Hernia Surgery</a>
+        <a href="#options">Complex Hernia Repair</a>
+      </div>
+    </div>
+
+    <div class="acc">
+      <button class="acc__btn" type="button" aria-expanded="false" aria-controls="acc-recovery">
+        <span><svg aria-hidden="true"><use href="#i-leaf"/></svg>Recovery &amp; Aftercare</span>
+        <svg class="acc__chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+      </button>
+      <div class="acc__panel" id="acc-recovery" hidden>
+        <a href="#journey">Care Journey</a>
+        <a href="#experience">Patient Experience</a>
+        <a href="#faqs">Frequently Asked Questions</a>
+      </div>
+    </div>
+
+    <a href="#why">Why Advitya Healthcares</a>
+    <a href="#locations">Locations</a>
+    <a href="#book" data-book>Book an Appointment</a>
+  </nav>
+</aside>
 
 <main id="main">
 
@@ -352,14 +527,14 @@
     </div>
 
     <div class="grid-3">
-      <article class="type-card reveal">
+      <article class="type-card reveal" id="type-inguinal">
         <div class="type-card__art"><svg viewBox="0 0 48 56" role="img" aria-label="Illustration marking the groin region"><use href="#torso"/><circle cx="18" cy="36" r="9.1" fill="#DF6A50" opacity=".18"/><circle cx="18" cy="36" r="4.6" fill="#DF6A50" stroke="#fff" stroke-width="1.6"/></svg></div>
         <h3>Inguinal Hernia</h3>
         <p>The most common type, occurring in the groin. It often becomes more noticeable on standing, coughing or lifting.</p>
         <a class="type-card__link" href="#book">Discuss with our team <svg><use href="#i-arrow"/></svg></a>
       </article>
 
-      <article class="type-card reveal">
+      <article class="type-card reveal" id="type-umbilical">
         <div class="type-card__art"><svg viewBox="0 0 48 56" role="img" aria-label="Illustration marking the navel"><use href="#torso"/><circle cx="24" cy="26" r="9.1" fill="#9E2430" opacity=".18"/><circle cx="24" cy="26" r="4.6" fill="#9E2430" stroke="#fff" stroke-width="1.6"/></svg></div>
         <h3>Umbilical Hernia</h3>
         <p>Occurs at or around the navel. It may be present from an early age or develop later in adult life.</p>
@@ -373,14 +548,14 @@
         <a class="type-card__link" href="#book">Discuss with our team <svg><use href="#i-arrow"/></svg></a>
       </article>
 
-      <article class="type-card reveal">
+      <article class="type-card reveal" id="type-incisional">
         <div class="type-card__art"><svg viewBox="0 0 48 56" role="img" aria-label="Illustration marking a previous surgical scar"><use href="#torso"/><path d="M17 30h14" stroke="#CBAAA6" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 3"/><circle cx="24" cy="30" r="8.9" fill="#9E2430" opacity=".18"/><circle cx="24" cy="30" r="4.4" fill="#9E2430" stroke="#fff" stroke-width="1.6"/></svg></div>
         <h3>Incisional Hernia</h3>
         <p>Occurs through the scar of a previous abdominal surgery, where the healed muscle layer has weakened.</p>
         <a class="type-card__link" href="#book">Discuss with our team <svg><use href="#i-arrow"/></svg></a>
       </article>
 
-      <article class="type-card reveal">
+      <article class="type-card reveal" id="type-femoral">
         <div class="type-card__art"><svg viewBox="0 0 48 56" role="img" aria-label="Illustration marking the lower groin"><use href="#torso"/><circle cx="20" cy="41" r="8.9" fill="#9E2430" opacity=".18"/><circle cx="20" cy="41" r="4.4" fill="#9E2430" stroke="#fff" stroke-width="1.6"/></svg></div>
         <h3>Femoral Hernia</h3>
         <p>Occurs lower in the groin and may require prompt evaluation, as the opening involved is typically narrow.</p>
@@ -520,7 +695,7 @@
     </div>
 
     <div class="grid-2">
-      <article class="ocard reveal">
+      <article class="ocard reveal" id="repair-open">
         <span class="ocard__top" aria-hidden="true"></span>
         <span class="ocard__tag">Approach 01</span>
         <h3>Open Hernia Repair</h3>
@@ -532,7 +707,7 @@
         </ul>
       </article>
 
-      <article class="ocard reveal">
+      <article class="ocard reveal" id="repair-laparoscopic">
         <span class="ocard__top" aria-hidden="true"></span>
         <span class="ocard__tag">Approach 02</span>
         <h3>Laparoscopic Hernia Repair</h3>
@@ -784,7 +959,7 @@
     <div class="footer__grid">
       <div>
         <div class="footer__brand">
-          <img src="images/advitya_logo_nav.png" alt="Advitya Healthcares logo" width="234" height="200" loading="lazy">
+          <img src="images/advitya_logo_mark.png" alt="Advitya Healthcares logo" width="147" height="126" loading="lazy">
           <span><b>Advitya Healthcares</b><span>Science for Humanity</span></span>
         </div>
         <p>Specialist gastrointestinal, pancreato-biliary and hernia surgical care, with consultations in Kolkata and Baruipur.</p>
@@ -841,12 +1016,6 @@
   <a class="is-book" href="#book" data-book><svg><use href="#i-calendar"/></svg>Book Appointment</a>
 </nav>
 
-<!-- ============ FLOATING WHATSAPP BUTTON ============ -->
-<a class="wafloat" href="https://wa.me/919211221551?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20hernia%20surgery."
-   target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
-  <svg aria-hidden="true"><use href="#i-wa"/></svg>
-</a>
-
 <!-- ============ QUICK-START MODAL ============ -->
 <div class="modal" id="quick-modal" role="dialog" aria-modal="true" aria-labelledby="quick-title" hidden>
   <div class="modal__card" role="document">
@@ -868,6 +1037,20 @@
     </form>
   </div>
 </div>
+
+<!-- Google Translate engine. Its own UI is hidden in CSS; the premium
+     selector above drives it. -->
+<div id="google_translate_element" aria-hidden="true"></div>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({
+    pageLanguage:'en',
+    includedLanguages:'en,bn,gu,hi,kn,ml,mr,or,ta',
+    autoDisplay:false
+  },'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
 
 <script src="js/main.js" defer></script>
 </body>

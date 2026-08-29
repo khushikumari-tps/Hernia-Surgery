@@ -748,7 +748,10 @@ ul{margin:0;padding:0;list-style:none}
   font-family:var(--font-head);font-weight:700;font-size:.98rem;color:var(--blue-600);
 }
 .modal__back:hover{text-decoration:underline;text-underline-offset:3px}
+/* html is the scrolling element now that it carries overflow-x, so the lock
+   has to be applied there as well - body-only would no longer hold. */
 body.modal-open{overflow:hidden}
+html.modal-open{overflow:hidden}
 @media (max-width:420px){
   .modal__card{padding:30px 22px 24px}
   .modal__card h2{font-size:1.28rem}
@@ -983,14 +986,16 @@ body.modal-open{overflow:hidden}
 .brandmark{
   position:fixed;top:clamp(12px,1.6vw,18px);left:clamp(12px,2.4vw,30px);z-index:960;
   display:inline-flex;align-items:center;gap:12px;
-  background:rgba(255,255,255,.95);border:1px solid rgba(158,36,48,.12);
+  background:rgba(255,255,255,.96);border:1px solid rgba(158,36,48,.24);
   border-radius:14px;padding:9px 18px 9px 12px;
-  box-shadow:0 10px 26px rgba(58,10,12,.18);
+  /* even ambient ring first, then the directional lift — without the ring the
+     right edge had no shadow behind it and the faint border read as missing */
+  box-shadow:0 0 0 1px rgba(158,36,48,.05),0 6px 18px rgba(58,10,12,.12),0 10px 26px rgba(58,10,12,.14);
   -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
   transition:padding .28s cubic-bezier(.2,.7,.3,1),box-shadow .28s,transform .28s;
 }
-.brandmark:hover{transform:translateY(-1px);box-shadow:0 14px 32px rgba(58,10,12,.22)}
-.brandmark img{height:44px;width:auto;transition:height .28s cubic-bezier(.2,.7,.3,1)}
+.brandmark:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(158,36,48,.07),0 8px 22px rgba(58,10,12,.14),0 14px 32px rgba(58,10,12,.18)}
+.brandmark img{height:clamp(32px,4.4vw,44px);width:auto;object-fit:contain;display:block;flex:none;transition:height .28s cubic-bezier(.2,.7,.3,1)}
 .brandmark__text{display:flex;flex-direction:column;line-height:1.15;transition:opacity .22s,max-width .3s}
 .brandmark__text b{font-family:var(--font-head);font-weight:800;font-size:.98rem;color:var(--navy-800);letter-spacing:-.02em}
 .brandmark__text small{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-600)}
@@ -998,127 +1003,25 @@ body.modal-open{overflow:hidden}
 .brandmark.is-compact img{height:38px}
 .brandmark.is-compact .brandmark__text{opacity:0;max-width:0;overflow:hidden}
 @media (max-width:760px){
-  .brandmark{padding:8px 12px;border-radius:12px}
+  /* the wordmark inside the PNG renders ~7.6px tall at this size, so the
+     crisp HTML text stays visible on mobile (matching the HPB header) */
+  .brandmark{padding:8px 14px 8px 10px;border-radius:12px;gap:9px}
   .brandmark img{height:36px}
-  .brandmark__text{display:none}
+  .brandmark__text{display:flex}
+  .brandmark__text b{font-size:clamp(.78rem,3.4vw,.92rem)}
+  .brandmark__text small{font-size:clamp(.5rem,2.1vw,.58rem);letter-spacing:.12em}
+}
+@media (max-width:340px){
+  .brandmark__text small{display:none}
 }
 
 
 /* ==========================================================================
-   31. Mobile / tablet navigation (hamburger)
-   Desktop (>900px) is unaffected: the toggle and panel are display:none there.
-   ========================================================================== */
-.navtoggle{
-  display:none;
-  position:fixed;top:clamp(12px,1.6vw,18px);right:clamp(12px,2.4vw,20px);z-index:970;
-  width:48px;height:48px;padding:0;border:1px solid rgba(158,36,48,.12);
-  background:rgba(255,255,255,.95);border-radius:14px;cursor:pointer;
-  box-shadow:0 10px 26px rgba(58,10,12,.18);
-  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
-  place-items:center;
-}
-.navtoggle__bars{display:grid;gap:5px;width:20px}
-.navtoggle__bars i{
-  display:block;height:2px;width:100%;border-radius:2px;background:var(--navy-800);
-  transition:transform .28s cubic-bezier(.2,.7,.3,1),opacity .2s;
-}
-.navtoggle[aria-expanded="true"] .navtoggle__bars i:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.navtoggle[aria-expanded="true"] .navtoggle__bars i:nth-child(2){opacity:0}
-.navtoggle[aria-expanded="true"] .navtoggle__bars i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-
-.navscrim{
-  position:fixed;inset:0;z-index:975;background:rgba(30,6,8,.5);
-  opacity:0;transition:opacity .26s ease;
-}
-.navscrim.is-open{opacity:1}
-
-.sitenav{
-  position:fixed;top:0;right:0;bottom:0;z-index:980;
-  width:min(330px,86vw);max-width:100%;
-  display:flex;flex-direction:column;
-  background:#fff;box-shadow:-18px 0 44px rgba(30,6,8,.24);
-  transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.7,.3,1);
-  overflow-y:auto;overscroll-behavior:contain;
-  padding-bottom:env(safe-area-inset-bottom);
-}
-.sitenav.is-open{transform:none}
-/* display:flex above would otherwise beat the UA rule for [hidden] */
-.sitenav[hidden],.navscrim[hidden]{display:none}
-.sitenav__head{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:18px 18px 14px;border-bottom:1px solid var(--line);
-}
-.sitenav__title{
-  font-family:var(--font-head);font-weight:800;font-size:.72rem;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--teal-600);
-}
-.sitenav__close{
-  width:40px;height:40px;flex:none;border:1px solid var(--line);background:#fff;border-radius:50%;
-  cursor:pointer;display:grid;place-items:center;color:var(--navy-800);transition:background .2s,border-color .2s;
-}
-.sitenav__close:hover{background:var(--surface-2);border-color:var(--blue-500)}
-.sitenav__close svg{width:18px;height:18px}
-
-.sitenav__list{display:block;padding:6px 0;margin:0;flex:1 1 auto;min-height:0}
-.sitenav__list li{border-bottom:1px solid var(--line-soft)}
-.sitenav__list li:last-child{border-bottom:0}
-.sitenav__list a{
-  display:block;padding:14px 18px;min-height:48px;
-  font-family:var(--font-head);font-weight:700;font-size:1rem;line-height:1.4;
-  color:var(--navy-800);transition:background .2s,color .2s,padding-left .2s;
-  overflow-wrap:anywhere;
-}
-.sitenav__list a:hover,.sitenav__list a:focus-visible{background:var(--blue-050);color:var(--blue-600);padding-left:22px}
-
-.sitenav__cta{display:grid;gap:10px;padding:16px 18px 22px;border-top:1px solid var(--line);background:var(--surface-2)}
-.sitenav__book,.sitenav__call{
-  display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:50px;
-  border-radius:999px;padding:13px 18px;
-  font-family:var(--font-head);font-weight:700;font-size:.98rem;text-align:center;
-}
-.sitenav__book{background:linear-gradient(135deg,var(--blue-600),var(--navy-700));color:#fff;box-shadow:var(--shadow-blue)}
-.sitenav__call{background:#fff;color:var(--navy-800);border:1.5px solid var(--line)}
-.sitenav__book svg,.sitenav__call svg{width:17px;height:17px;flex:none}
-
-/* html is the scrolling element now that it carries overflow-x, so the lock
-   has to be applied there as well - body-only would no longer hold. */
-body.nav-open{overflow:hidden}
-html.nav-open,html.modal-open{overflow:hidden}
-
-@media (max-width:900px){
-  .navtoggle{display:grid}
-}
-@media (prefers-reduced-motion:reduce){
-  .sitenav{transition:none}
-}
-
-/* ==========================================================================
-   32. Floating WhatsApp button
-   Mobile / tablet only, so the desktop layout is unchanged. It is lifted
-   clear of the sticky mobile CTA bar wherever that bar is on screen.
+   32. Sticky mobile CTA bar metrics
+   --cta-h is the height reserved at the bottom of the page for the fixed
+   Call / WhatsApp / Book Appointment bar.
    ========================================================================== */
 :root{--cta-h:64px}
-
-.wafloat{
-  display:none;
-  position:fixed;right:16px;bottom:16px;z-index:860;
-  width:52px;height:52px;border-radius:50%;
-  background:#1FA855;color:#fff;
-  place-items:center;box-shadow:0 10px 26px rgba(31,168,85,.38);
-  transition:transform .24s cubic-bezier(.2,.7,.3,1),box-shadow .24s;
-}
-.wafloat svg{width:27px;height:27px}
-.wafloat:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(31,168,85,.46)}
-
-@media (max-width:900px){
-  .wafloat{display:grid}
-}
-/* clear the sticky Call / WhatsApp / Book bar */
-@media (max-width:760px){
-  .wafloat{bottom:calc(var(--cta-h) + env(safe-area-inset-bottom) + 14px)}
-}
-/* hidden while the slide-in menu or the booking modal is open */
-body.nav-open .wafloat,body.modal-open .wafloat{display:none}
 
 
 /* ==========================================================================
@@ -1149,9 +1052,6 @@ body.nav-open .wafloat,body.modal-open .wafloat{display:none}
   .footer__contact a{display:inline-block;padding-block:8px}
   .footer__legal a{display:inline-block;padding-block:6px}
   .anatomy{max-width:640px;margin-inline:auto}
-  .brandmark{max-width:calc(100% - 84px)} /* never runs under the hamburger */
-  .brandmark__text{min-width:0}
-  .brandmark__text b,.brandmark__text small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
 
 /* ---- phones and small tablets: up to 760px ---- */
@@ -1176,7 +1076,8 @@ body.nav-open .wafloat,body.modal-open .wafloat{display:none}
 
   /* hero */
   .phero{padding-top:84px}
-  .phero__photo{width:min(262px,72vw);height:auto;aspect-ratio:262/370}
+  /* photo fills the content column, capped so it stays a portrait not a wall */
+  .phero__photo{width:100%;max-width:340px;height:auto;aspect-ratio:262/370}
   .phero__nameline{gap:10px}
   .facts li{font-size:.95rem}
   .phero__line{align-items:flex-start}
@@ -1232,7 +1133,7 @@ body.nav-open .wafloat,body.modal-open .wafloat{display:none}
 /* ---- 390px and below (375px / 360px) ---- */
 @media (max-width:390px){
   :root{--gutter:16px}
-  .phero__photo{width:min(240px,70vw)}
+  .phero__photo{max-width:320px}
   .widget__head,.widget__body{padding-left:16px;padding-right:16px}
   .widget__head h2{font-size:1.06rem}
   .slot{width:62px}
@@ -1241,9 +1142,518 @@ body.nav-open .wafloat,body.modal-open .wafloat{display:none}
   .picker__btn{width:30px}
   .mobile-cta a{font-size:.68rem;padding:9px 4px}
   .mobile-cta a svg{width:18px;height:18px}
-  .sitenav{width:min(300px,88vw)}
-  .wafloat{width:50px;height:50px;right:14px}
   .modal{padding:16px}
   .loc-card{left:10px;right:10px;top:10px}
   .tl-head h2{font-size:1.62rem}
 }
+
+
+/* ==========================================================================
+   34. Mobile menu
+   Sized to match the main Advitya site nav: left-aligned rows on thin
+   separators, no pills, current page in maroon. Mobile/tablet only, so the
+   desktop layout is untouched.
+   ========================================================================== */
+
+/* ---------- 34a. Hamburger ---------- */
+.burger{
+  display:none;position:fixed;top:clamp(12px,1.6vw,18px);right:clamp(12px,2.4vw,20px);z-index:965;
+  width:46px;height:46px;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.95);border:1px solid rgba(158,36,48,.12);border-radius:14px;
+  box-shadow:0 10px 26px rgba(58,10,12,.18);color:var(--navy-800);cursor:pointer;
+  -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
+}
+.burger svg{width:22px;height:22px}
+.burger:active{transform:scale(.96)}
+
+/* ---------- 34b. Slide-in drawer ---------- */
+.scrim{
+  position:fixed;inset:0;z-index:970;background:rgba(30,6,8,.5);opacity:0;visibility:hidden;
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);transition:opacity .28s,visibility .28s;
+}
+.scrim.is-open{opacity:1;visibility:visible}
+.scrim[hidden]{display:none}
+
+.drawer{
+  /* height follows the content instead of filling the screen, so no empty
+     white gap is left under the last row; it still scrolls when it is long */
+  position:fixed;top:0;right:0;bottom:auto;z-index:980;width:min(330px,86vw);background:#fff;
+  max-height:100vh;max-height:100dvh;
+  border-bottom-left-radius:16px;
+  transform:translateX(102%);transition:transform .32s cubic-bezier(.2,.7,.3,1);
+  display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(30,6,8,.24);visibility:hidden;
+}
+.drawer.is-open{transform:none;visibility:visible}
+.drawer[hidden]{display:none}
+
+.drawer__head{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex:none;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 14px;border-bottom:1px solid var(--line);
+}
+.drawer__head b{font-family:var(--font-head);font-size:1rem;color:var(--navy-800);letter-spacing:-.01em}
+.drawer__close{
+  width:44px;height:44px;flex:none;border:1px solid var(--line);background:#fff;border-radius:12px;
+  display:grid;place-items:center;color:var(--navy-800);cursor:pointer;transition:background .2s,border-color .2s;
+}
+.drawer__close:hover{background:var(--surface-2);border-color:var(--blue-500)}
+.drawer__close svg{width:18px;height:18px}
+
+/* rows: the sizing from the reference nav */
+.drawer__links{
+  flex:0 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;display:block;
+  padding:0 0 calc(6px + env(safe-area-inset-bottom));
+}
+.drawer__links a{
+  display:flex;align-items:center;min-height:52px;padding:14px 16px;
+  margin-inline:6px;border-bottom:1px solid var(--line-soft);
+  font-family:var(--font-head);font-weight:600;font-size:1rem;line-height:1.35;
+  color:var(--ink);overflow-wrap:anywhere;transition:color .2s,background .2s;
+}
+.drawer__links a:last-child{border-bottom:0}
+.drawer__links a.is-current{color:var(--blue-600)}
+.drawer__links a:hover,.drawer__links a:focus-visible{color:var(--blue-600);background:var(--blue-050)}
+
+body.drawer-open{overflow:hidden}
+html.drawer-open{overflow:hidden}
+
+/* ---------- 34c. Mobile and tablet only ---------- */
+@media (max-width:900px){
+  .burger{display:flex}
+  .brandmark{max-width:calc(100% - 84px)}   /* logo stays clear of the hamburger */
+  .brandmark__text{min-width:0}
+  .brandmark__text b,.brandmark__text small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+
+/* ---------- 34d. Short viewports: fit all rows, never slice one ---------- */
+@media (max-height:760px){
+  .drawer__head{padding-top:calc(11px + env(safe-area-inset-top));padding-bottom:11px}
+  .drawer__links a{min-height:46px;padding:10px 16px}
+  /* anything still below the fold fades, so it reads as "more below" */
+  .drawer__links{
+    -webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 22px),transparent 100%);
+    mask-image:linear-gradient(180deg,#000 calc(100% - 22px),transparent 100%);
+  }
+}
+@media (max-height:640px){
+  .drawer__links a{min-height:44px;font-size:.95rem}
+}
+@media (max-width:390px){
+  .drawer{width:min(300px,88vw)}
+}
+@media (prefers-reduced-motion:reduce){
+  .drawer,.scrim{transition:none}
+}
+
+
+/* ==========================================================================
+   35. Hero — light premium medical treatment
+   Ported from the HPB Surgery page so the two heroes read as one brand.
+   Palette from the Advitya logo: deep maroon #5A1013, crimson #9E2430,
+   coral #DF6A50. Roughly 75% warm neutral ground, 20% brand-tinted wash,
+   5% accent. Structure, layout, content and images are untouched — colour only.
+   ========================================================================== */
+
+.phero{
+  color:var(--body);
+  /* NB: no overflow:hidden here. The booking widget is position:absolute and
+     deliberately overhangs the hero on wide screens - clipping it would cut
+     off its Book Appointment / Call Now buttons. The decorative ::before and
+     ::after layers use inset:0, so they stay inside without it. */
+  background:
+    /* warm brand glow, top-left, behind the portrait */
+    radial-gradient(46% 58% at 14% 18%, rgba(223,106,80,.13), transparent 62%),
+    /* crimson breath, top-right, behind the booking card */
+    radial-gradient(42% 55% at 88% 8%,  rgba(158,36,48,.09),  transparent 60%),
+    /* champagne pool along the lower edge */
+    radial-gradient(70% 46% at 50% 108%, rgba(216,96,84,.07), transparent 68%),
+    linear-gradient(135deg,#FFFFFF 0%,#FFFAF7 46%,#FBF5F1 78%,#F7F4F2 100%);
+  border-bottom:1px solid #F2E6E3;
+}
+
+/* decorative layer 1: soft dot field, top-right */
+.phero::before{
+  opacity:.5;
+  background:repeating-radial-gradient(circle at 78% 6%,rgba(158,36,48,.13) 0 1px,transparent 1px 32px);
+  -webkit-mask-image:radial-gradient(58% 86% at 80% 8%,#000,transparent 74%);
+  mask-image:radial-gradient(58% 86% at 80% 8%,#000,transparent 74%);
+}
+
+/* decorative layer 2: thin flowing arcs, bottom-left */
+.phero::after{
+  opacity:.5;
+  background:
+    repeating-radial-gradient(circle at 8% 116%,transparent 0 78px,rgba(216,96,84,.16) 78px 79px,transparent 79px 160px),
+    repeating-radial-gradient(circle at 8% 116%,transparent 0 38px,rgba(158,36,48,.10) 38px 39px,transparent 39px 120px);
+  -webkit-mask-image:radial-gradient(62% 84% at 12% 108%,#000,transparent 72%);
+  mask-image:radial-gradient(62% 84% at 12% 108%,#000,transparent 72%);
+}
+
+/* ---------- portrait: white card, soft brand glow behind ---------- */
+.phero__photo{
+  position:relative;background:#fff;
+  border:1px solid rgba(158,36,48,.10);border-radius:18px;padding:0;
+  /* the warm halo is a spread shadow, so the card keeps overflow:hidden for
+     its rounded corners without clipping the glow */
+  box-shadow:
+    0 1px 2px rgba(58,10,12,.05),
+    0 18px 42px rgba(58,10,12,.10),
+    0 0 68px 16px rgba(223,106,80,.16);
+}
+.phero__photo img{border-radius:17px}
+
+/* ---------- copy: charcoal for reading, brand accent for signals ---------- */
+.phero__reg{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--font-head);font-weight:700;font-size:.74rem;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--blue-600);
+}
+.phero__reg::before{
+  content:"";width:22px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--teal-500),var(--blue-600));
+}
+.phero h1{color:var(--ink)}
+
+.phero__share{color:var(--blue-600);border:1px solid rgba(158,36,48,.16);background:#fff}
+.phero__share:hover{background:var(--blue-050);border-color:var(--blue-500)}
+
+.facts li{color:var(--body)}
+.facts li b{color:var(--ink);font-weight:700}
+
+.phero__rule{background:linear-gradient(90deg,rgba(158,36,48,.16),rgba(158,36,48,.05) 60%,transparent)}
+.phero__line{color:var(--ink);font-weight:500}
+.phero__line > svg{color:var(--blue-600);opacity:1}
+.phero__line span::before{background:var(--teal-500);opacity:1}
+
+/* the pill is a WhatsApp action, so it carries WhatsApp green */
+.phero__pill{color:var(--navy-800);font-weight:600}
+.phero__pill i{border-color:rgba(31,168,85,.45);background:rgba(31,168,85,.08)}
+.phero__pill i svg{color:#1FA855}
+.phero__pill:hover i{background:rgba(31,168,85,.16)}
+
+/* ---------- booking card: floating premium panel ---------- */
+.widget{
+  border:1px solid rgba(158,36,48,.12);border-radius:16px;
+  box-shadow:0 1px 2px rgba(58,10,12,.04), 0 22px 50px rgba(58,10,12,.13);
+}
+.widget__head{
+  background:linear-gradient(135deg,#FFF8F5,#FDF1EE);
+  border-bottom:1px solid rgba(158,36,48,.10);position:relative;
+}
+.widget__head::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
+  background:linear-gradient(90deg,var(--blue-600),var(--teal-500) 62%,transparent);
+}
+
+/* helper text under each location was 3.7:1 on white - lift to AA */
+.radio span small{color:var(--body)}
+
+/* ---------- brand mark sits on light ground now ----------
+   On the light hero a .14 border plus a purely downward shadow left the right
+   edge with nothing behind it, so the outline read as missing on that side.
+   Slightly stronger border + an even ambient ring fixes it on all four sides. */
+.brandmark{
+  background:rgba(255,255,255,.96);
+  border-color:rgba(158,36,48,.26);
+  box-shadow:0 0 0 1px rgba(158,36,48,.05),0 4px 14px rgba(58,10,12,.10),0 8px 22px rgba(58,10,12,.10);
+}
+
+/* ---------- mobile: keep the glow contained and the ground calm ---------- */
+@media (max-width:760px){
+  .phero{
+    background:
+      radial-gradient(58% 40% at 18% 12%, rgba(223,106,80,.13), transparent 64%),
+      radial-gradient(62% 34% at 88% 4%,  rgba(158,36,48,.07),  transparent 62%),
+      linear-gradient(160deg,#FFFFFF 0%,#FFFAF7 52%,#FAF4F1 100%);
+  }
+  .phero::before{opacity:.35}
+  .phero::after{opacity:.35}
+  .phero__photo{
+    border-radius:16px;
+    box-shadow:
+      0 1px 2px rgba(58,10,12,.05),
+      0 14px 32px rgba(58,10,12,.10),
+      0 0 48px 12px rgba(223,106,80,.14);
+  }
+}
+
+
+/* ==========================================================================
+   36. Desktop navbar + Hernia Surgery mega menu  (>=901px)
+   Ground is white and neutral grey; the brand crimson appears only as an
+   accent (icons, rules, active state, CTA) so the panel never reads red-heavy.
+   Below 901px the whole navbar is display:none and the drawer takes over.
+   ========================================================================== */
+.dnav{display:none}
+
+@media (min-width:901px){
+  .brandmark{display:none}          /* the logo lives in the real header now */
+
+  /* body{overflow-x:hidden} makes <body> a scroll container, which silently
+     breaks position:sticky for its children - so the header is fixed and the
+     body reserves its height instead. */
+  body{padding-top:78px}
+  .dnav{
+    display:block;position:fixed;top:0;left:0;right:0;z-index:970;
+    background:rgba(255,255,255,.94);
+    -webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px);
+    border-bottom:1px solid var(--line-soft);
+    box-shadow:0 1px 3px rgba(58,10,12,.04);
+  }
+  .dnav__inner{
+    width:100%;max-width:var(--wrap);margin-inline:auto;
+    padding-inline:var(--gutter);height:78px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+
+  .dnav__brand{display:inline-flex;align-items:center;gap:11px;flex:none;min-width:0}
+  .dnav__brand img{height:clamp(32px,4.4vw,44px);width:auto;object-fit:contain;display:block;flex:none}
+  .dnav__brandtext{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+  .dnav__brandtext b{
+    font-family:var(--font-head);font-weight:800;font-size:1rem;
+    color:var(--navy-800);letter-spacing:-.02em;white-space:nowrap;
+  }
+  .dnav__brandtext small{
+    font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal-600);white-space:nowrap;
+  }
+
+  .dnav__nav{display:flex;align-items:center;gap:6px;flex:none}
+  .dnav__link{
+    display:inline-flex;align-items:center;height:42px;padding:0 14px;border-radius:10px;
+    font-family:var(--font-head);font-weight:600;font-size:.95rem;color:var(--ink);
+    transition:background .2s,color .2s;
+  }
+  .dnav__link:hover{background:var(--surface-2);color:var(--blue-600)}
+  .dnav__cta{
+    display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;margin-left:8px;
+    border-radius:999px;background:linear-gradient(135deg,var(--blue-600),var(--navy-700));color:#fff;
+    font-family:var(--font-head);font-weight:700;font-size:.92rem;
+    box-shadow:0 6px 16px rgba(158,36,48,.22);transition:transform .2s,box-shadow .2s;
+  }
+  .dnav__cta svg{width:16px;height:16px}
+  .dnav__cta:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(158,36,48,.28)}
+
+  /* ---------- trigger ---------- */
+  .mega{position:static}
+  .mega__trigger{
+    display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 14px;
+    border:0;background:none;cursor:pointer;border-radius:10px;
+    font-family:var(--font-head);font-weight:600;font-size:.95rem;color:var(--ink);
+    transition:background .2s,color .2s;
+  }
+  .mega__trigger svg{width:13px;height:13px;transition:transform .24s ease}
+  .mega__trigger:hover,.mega__trigger[aria-expanded="true"]{background:var(--surface-2);color:var(--blue-600)}
+  .mega__trigger[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+  /* ---------- panel ---------- */
+  .mega__panel{
+    position:absolute;left:50%;top:calc(100% + 10px);transform:translate(-50%,-8px);
+    width:min(var(--wrap) - (2 * var(--gutter)), calc(100vw - 2 * var(--gutter)));
+    max-width:900px;
+    background:#fff;border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 1px 2px rgba(58,10,12,.04),0 24px 60px rgba(58,10,12,.13);
+    padding:26px 28px 0;overflow:hidden;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .24s ease,transform .24s cubic-bezier(.2,.7,.3,1),visibility .24s;
+  }
+  .mega__panel[hidden]{display:block}     /* [hidden] must not kill the transition */
+  .mega.is-open .mega__panel{
+    opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);
+  }
+
+  .mega__grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 36px}
+  .mega__col{min-width:0}
+  .mega__heading{
+    display:flex;align-items:center;gap:9px;margin:0 0 14px;padding-bottom:12px;
+    border-bottom:1px solid var(--line-soft);
+    font-family:var(--font-head);font-weight:800;font-size:.74rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--teal-600);
+  }
+  .mega__heading svg{width:17px;height:17px;flex:none;color:var(--blue-600)}
+
+  .mega__list{display:grid;gap:2px;margin:0 0 22px;padding:0;list-style:none}
+  .mega__list a{
+    display:block;padding:10px 12px;border-radius:9px;
+    font-size:.95rem;font-weight:500;color:var(--body);
+    transition:background .18s,color .18s,padding-left .18s;
+  }
+  .mega__list a:hover,.mega__list a:focus-visible{
+    background:var(--surface-2);color:var(--blue-600);padding-left:16px;
+  }
+  .mega__list a.is-current{
+    color:var(--blue-600);font-weight:700;background:var(--blue-050);
+  }
+
+  /* ---------- CTA band ---------- */
+  .mega__cta{
+    display:flex;align-items:center;justify-content:space-between;gap:22px;
+    margin:0 -28px;padding:18px 28px;
+    background:linear-gradient(120deg,var(--surface-2) 0%,#FFF7F4 100%);
+    border-top:1px solid var(--line-soft);
+  }
+  .mega__cta-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .mega__cta-copy b{font-family:var(--font-head);font-size:1rem;color:var(--ink);letter-spacing:-.01em}
+  .mega__cta-copy span{font-size:.9rem;color:var(--muted)}
+  .mega__cta-btn{
+    display:inline-flex;align-items:center;gap:9px;flex:none;height:46px;padding:0 22px;
+    border-radius:999px;background:linear-gradient(135deg,var(--blue-600),var(--navy-700));color:#fff;
+    font-family:var(--font-head);font-weight:700;font-size:.95rem;
+    box-shadow:0 8px 20px rgba(158,36,48,.24);transition:transform .2s,box-shadow .2s;
+  }
+  .mega__cta-btn svg{width:16px;height:16px;transition:transform .2s}
+  .mega__cta-btn:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(158,36,48,.3)}
+  .mega__cta-btn:hover svg{transform:translateX(3px)}
+
+  /* the sticky header occupies the space the floating brand pill used to */
+  .phero{padding-top:clamp(26px,3.2vw,44px)}
+  :root{--header-h:78px}
+}
+
+@media (min-width:901px) and (prefers-reduced-motion:reduce){
+  .mega__panel{transition:none}
+}
+
+/* ==========================================================================
+   37. Mobile drawer accordion (<=900px)
+   ========================================================================== */
+.acc{border-bottom:1px solid var(--line-soft)}
+.acc__btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+  min-height:52px;padding:12px 16px;border:0;background:none;cursor:pointer;text-align:left;
+  font-family:var(--font-head);font-weight:700;font-size:1rem;color:var(--ink);
+}
+.acc__btn > span{display:inline-flex;align-items:center;gap:10px;min-width:0}
+.acc__btn > span svg{width:17px;height:17px;flex:none;color:var(--blue-600)}
+.acc__chev{width:13px;height:13px;flex:none;color:var(--muted);transition:transform .24s ease}
+.acc__btn[aria-expanded="true"]{color:var(--blue-600)}
+.acc__btn[aria-expanded="true"] .acc__chev{transform:rotate(180deg)}
+.acc__btn:hover{background:var(--surface-2)}
+
+.acc__panel{background:var(--surface-2);padding:2px 0 8px}
+.acc__panel[hidden]{display:none}
+.acc__panel a{
+  display:block;min-height:44px;padding:11px 16px 11px 42px;
+  font-size:.94rem;font-weight:500;color:var(--body);
+  border-bottom:1px solid rgba(170,40,50,.08);
+}
+.acc__panel a:last-child{border-bottom:0}
+.acc__panel a:hover,.acc__panel a:focus-visible{color:var(--blue-600);background:#fff}
+.acc__panel a.is-current{color:var(--blue-600);font-weight:700}
+
+
+/* ==========================================================================
+   38. Language switcher — premium control over a hidden Google Translate engine
+   Class contract matches the switcher logic in js/main.js:
+   .lang[data-lang-root] > .lang__trigger + .lang__menu > .lang__opt[data-lang]
+   ========================================================================== */
+.lang{position:relative;flex:none}
+
+.lang__trigger{
+  display:inline-flex;align-items:center;gap:8px;
+  height:42px;padding:0 12px;
+  background:#fff;border:1px solid rgba(158,36,48,.22);border-radius:12px;cursor:pointer;
+  font-family:var(--font-head);font-weight:700;font-size:.9rem;color:var(--navy-800);
+  box-shadow:0 1px 2px rgba(58,10,12,.05);white-space:nowrap;
+  transition:border-color .2s,box-shadow .2s,background .2s,color .2s;
+}
+.lang__trigger:hover{border-color:var(--blue-500);color:var(--blue-600);box-shadow:0 4px 14px rgba(58,10,12,.08)}
+.lang__trigger:focus-visible{outline:3px solid var(--blue-500);outline-offset:2px}
+.lang.is-open .lang__trigger{border-color:var(--blue-500);color:var(--blue-600);background:var(--blue-050)}
+.lang__globe{width:17px;height:17px;flex:none;color:var(--blue-600)}
+.lang__current{line-height:1}
+.lang__chev{width:12px;height:12px;flex:none;opacity:.7;transition:transform .22s ease}
+.lang.is-open .lang__chev{transform:rotate(180deg)}
+
+.lang__menu{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:1040;
+  min-width:210px;max-width:calc(100vw - 28px);
+  margin:0;padding:6px;list-style:none;
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 18px 44px rgba(58,10,12,.16),0 0 0 1px rgba(158,36,48,.04);
+  transform-origin:top right;
+  opacity:0;transform:translateY(-6px) scale(.98);
+  transition:opacity .22s ease,transform .22s cubic-bezier(.2,.7,.3,1);
+}
+.lang.is-open .lang__menu{opacity:1;transform:none}
+.lang__menu[hidden]{display:none}
+.lang__menu li{margin:0}
+
+.lang__opt{
+  display:flex;align-items:center;gap:10px;width:100%;
+  min-height:44px;padding:0 10px;border:0;border-radius:10px;background:none;cursor:pointer;
+  font-family:var(--font-body);font-size:.95rem;color:var(--ink);text-align:left;
+  transition:background .18s,color .18s;
+}
+.lang__opt:hover{background:var(--surface-2);color:var(--blue-600)}
+.lang__opt:focus-visible{outline:3px solid var(--blue-500);outline-offset:-2px}
+.lang__opt.is-active{background:var(--blue-050);color:var(--blue-600);font-weight:600}
+
+.lang__code{
+  flex:none;min-width:30px;padding:3px 6px;border-radius:6px;
+  background:var(--surface-3);color:var(--navy-800);
+  font-family:var(--font-head);font-weight:800;font-size:.66rem;letter-spacing:.06em;text-align:center;
+}
+.lang__opt.is-active .lang__code{background:var(--blue-600);color:#fff}
+.lang__name{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lang__name i{font-style:normal;color:var(--muted);font-size:.86em;margin-left:5px}
+.lang__opt.is-active .lang__name i{color:var(--blue-500)}
+.lang__tick{width:16px;height:16px;flex:none;opacity:0;color:var(--blue-600);transition:opacity .18s}
+.lang__opt.is-active .lang__tick{opacity:1}
+
+/* ---------- header cluster: language pill + hamburger ---------- */
+.mtools{display:none}
+.lang__short{display:none}
+
+@media (max-width:900px){
+  .mtools{
+    display:flex;align-items:center;gap:8px;
+    position:fixed;top:clamp(12px,1.6vw,18px);right:clamp(12px,2.4vw,20px);z-index:965;
+  }
+  /* the burger is now laid out by the cluster, not pinned itself */
+  .burger{position:static;top:auto;right:auto}
+
+  /* compact pill: globe + language code, matched to the burger's height */
+  .mtools .lang__trigger{
+    height:46px;padding:0 10px;gap:6px;border-radius:14px;
+    border-color:rgba(158,36,48,.12);
+    background:rgba(255,255,255,.95);
+    box-shadow:0 10px 26px rgba(58,10,12,.18);
+    -webkit-backdrop-filter:saturate(180%) blur(10px);backdrop-filter:saturate(180%) blur(10px);
+  }
+  .mtools .lang__current{display:none}
+  .mtools .lang__short{
+    display:inline;font-family:var(--font-head);font-weight:700;
+    font-size:.86rem;letter-spacing:.02em;
+  }
+  .mtools .lang__globe{width:16px;height:16px}
+  .mtools .lang__chev{width:11px;height:11px}
+
+  /* the menu hangs under the pill and stays inside the viewport */
+  /* 9 options is taller than a short phone, so cap and scroll it */
+  .mtools .lang__menu{
+    right:0;left:auto;min-width:210px;
+    max-height:calc(100vh - 86px);max-height:calc(100dvh - 86px);
+    overflow-y:auto;overscroll-behavior:contain;
+  }
+  .mtools .lang__menu::-webkit-scrollbar{width:4px}
+  .mtools .lang__menu::-webkit-scrollbar-thumb{background:rgba(158,36,48,.22);border-radius:4px}
+}
+
+@media (max-width:390px){
+  .mtools{gap:6px}
+  .mtools .lang__trigger{height:44px;padding:0 8px}
+  .burger{width:44px;height:44px}
+  .mtools .lang__menu{min-width:198px}
+  .lang__opt{font-size:.92rem;min-height:42px}
+}
+@media (prefers-reduced-motion:reduce){
+  .lang__menu{transition:none}
+}
+
+/* keep Google's own chrome out of the page */
+.goog-te-banner-frame,.goog-te-balloon-frame,#goog-gt-tt,.goog-tooltip,
+.VIpgJd-ZVi9od-aZ2wEe-OiiCO{display:none !important}
+body{top:0 !important}
+.goog-text-highlight{background:none !important;box-shadow:none !important}
+#google_translate_element{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);opacity:0;pointer-events:none}
